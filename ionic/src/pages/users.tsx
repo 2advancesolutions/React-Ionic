@@ -12,7 +12,7 @@ const Users: FunctionComponent = () => {
     const httpClient = new HttpService();
     // how to handel side effects
     useEffect(() => {
-        // api url https://dummyjson.com/products
+        // api url https://dummyjson.com/users
         httpClient.get('users')
             .then((data: any) => {
                 setUserList(data.users);
