@@ -1,8 +1,8 @@
 export enum METHOD {
-    'GET',
-    'POST',
-    'PATCH',
-    'DELETE'
+    GET = 'GET',
+    POST ='POST',
+    PATCH ='PATCH',
+    DELETE ='DELETE'
 }
 
 const headers = {
@@ -15,7 +15,7 @@ class HttpService {
     private readonly _domain: string;
 
     constructor() {
-        this._domain = 'https://dummyjson.com/';
+        this._domain = 'https://dummyjson.com';
     }
 
     private joinUrl(baseURL: string, url: string): string {
@@ -42,7 +42,7 @@ class HttpService {
         return this.request(url, METHOD.POST).then(res => res.json());
     }
 
-    public get<T>(url: string, id: string | number): Promise<T> {
+    public get<T>(url: string, id?: string | number): Promise<T> {
         if (id) {
             url = `${url}/${id}`
         }

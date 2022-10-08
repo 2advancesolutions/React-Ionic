@@ -1,30 +1,26 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
+import HttpService from '../api/http';
+import { IUsersItem } from '../interface/interface';
 import './products.css';
 
-interface Product {
-    id: number
-    title: string
-    description: string
-    price: number
-    discountPercentage: number
-    rating: number
-    stock: number
-    brand: string
-    category: string
-    thumbnail: string
-    images: string[]
-}
+const Products: FunctionComponent = () => {
 
-const Products: FunctionComponent<Product[]> =(products) => {
-        return (
-            <div>
-                <h1>Product List</h1>
-                <ul>
-                   {/*  {products.map((value, index) =>
-                        <li key={index}>{value.brand}</li>
-                    )} */}
-                </ul>
-            </div>);
-    }
+    const [userList, setUserList] = useState<any>([]);
+    
+    const httpClient = new HttpService();
+   
+    useEffect(() => {
+        httpClient.get('users')
+            .then((data: any) => {
+                setUserList(data.users);
+            })
+    }, [])
+    return (
+        <ul>
+            {userList && userList.map((user: IUsersItem) =>
+                <div key={user.id}>{user.firstName}</div>
+            )}
+        </ul>);
+}
 
 export default Products;
