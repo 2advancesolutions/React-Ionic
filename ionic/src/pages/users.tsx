@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IonSearchbar, IonContent, IonAvatar, IonItem, IonLabel,IonList,IonLoading, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent} from '@ionic/react';
+import { IonSearchbar, IonContent, IonAvatar, IonItem, IonLabel,IonList,IonLoading, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonInfiniteScroll, IonInfiniteScrollContent } from '@ionic/react';
 import HttpService from '../api/http';
 import { IUsersItem } from '../interface/interface';
 import './users.css';
@@ -45,7 +45,8 @@ const Users: React.FC = () => {
             return {
                 ...state,
                 filterList: state.list.filter((user: IUsersItem) => {
-                    return user.firstName.toLowerCase().indexOf(query) > -1
+                    return user.firstName.toLowerCase().indexOf(query) > -1 
+                    || user.lastName.toLowerCase().indexOf(query) > -1
                 })
             }
         })
@@ -56,8 +57,6 @@ const Users: React.FC = () => {
     const navUserProfile = (user: IUsersItem) => {
         alert(user.firstName);
     }
-
-   
 
     return (
         <>
@@ -78,27 +77,32 @@ const Users: React.FC = () => {
                 onIonScroll={() => { }}
                 onIonScrollEnd={() => { }}
             >
-                <IonList>
-                    {state.filterList.length > 0 ? state.filterList.map((user: IUsersItem) =>
-                        <IonItem key={user.id} onClick={() => navUserProfile(user)}>
-                            <IonAvatar slot="start">
-                                <img alt="Silhouette of a person's head" src={user.image} />
-                            </IonAvatar>
-                            <IonLabel>
-                             {user.firstName}  {user.lastName} <span><IoMdGlobe/></span>
-                            </IonLabel>
-                        </IonItem>
-                    ) : (
-                        <IonCard>
-                            <IonCardHeader>
-                                <IonCardTitle>No Search Results Found</IonCardTitle>
-                            </IonCardHeader>
-                            <IonCardContent>
-                                Please try typing in another search
-                            </IonCardContent>
-                        </IonCard>
-                    )}
-                </IonList>
+                <IonInfiniteScroll>
+                    <IonInfiniteScrollContent>
+                        <IonList>
+                            {state.filterList.length > 0 ? state.filterList.map((user: IUsersItem) =>
+                                <IonItem key={user.id} onClick={() => navUserProfile(user)}>
+                                    <IonAvatar slot="start">
+                                        <img alt="Silhouette of a person's head" src={user.image} />
+                                    </IonAvatar>
+                                    <IonLabel>
+                                        {user.firstName}  {user.lastName} <span><IoMdGlobe /></span>
+                                    </IonLabel>
+                                </IonItem>
+                            ) : (
+                                <IonCard>
+                                    <IonCardHeader>
+                                        <IonCardTitle>No Search Results Found</IonCardTitle>
+                                    </IonCardHeader>
+                                    <IonCardContent>
+                                        Please try typing in another search
+                                    </IonCardContent>
+                                </IonCard>
+                            )}
+                        </IonList>
+
+                    </IonInfiniteScrollContent>
+                </IonInfiniteScroll>
             </IonContent>
         </>);
 }
