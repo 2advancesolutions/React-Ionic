@@ -1,11 +1,11 @@
-import { FunctionComponent, useEffect, useState } from 'react';
-import { IonItem, IonLabel, IonList } from '@ionic/react';
-
+import { useEffect, useState } from 'react';
+import { IonSearchbar, IonContent, IonInfiniteScroll, IonInfiniteScrollContent  } from '@ionic/react';
+import { IonAvatar, IonItem, IonLabel,IonList, IonThumbnail } from '@ionic/react';
 import HttpService from '../api/http';
 import { IUsersItem } from '../interface/interface';
 import './users.css';
 
-const Users: FunctionComponent = () => {
+const Users: React.FC = () => {
     //  set store
     const [userList, setUserList] = useState<any>([]);
     // create http client
@@ -25,17 +25,32 @@ const Users: FunctionComponent = () => {
     }
 
     return (
-        <div>
+        <>
+        
+            <IonSearchbar></IonSearchbar>
+            <IonContent
+        className="ion-padding"
+        scrollEvents={true}
+        onIonScrollStart={_e => {
+          console.log(_e);
+        }}
+        onIonScroll={() => {}}
+        onIonScrollEnd={() => {}}
+      >
             <IonList>
-                {/* how loop in react */}
                 {userList && userList.map((user: IUsersItem) =>
-                    // how you add click event
-                        <IonItem key={user.id} onClick={() => alertUser(user)}>
+                    <IonItem key={user.id} onClick={() => alertUser(user)}>
+                        <IonAvatar slot="start">
+                            <img alt="Silhouette of a person's head" src={user.image} />
+                        </IonAvatar>
+                        <IonLabel>
                             {user.firstName}
-                        </IonItem>
+                        </IonLabel>
+                    </IonItem>
                 )}
             </IonList>
-        </div>);
+            </IonContent>
+        </>);
 }
 
 export default Users;
