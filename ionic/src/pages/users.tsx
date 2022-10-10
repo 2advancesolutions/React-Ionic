@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { IonSearchbar, IonContent, IonInfiniteScroll, IonInfiniteScrollContent  } from '@ionic/react';
-import { IonAvatar, IonItem, IonLabel,IonList, IonThumbnail } from '@ionic/react';
+import { IonSearchbar, IonContent, IonGrid, IonRow, IonCol  } from '@ionic/react';
+import { IonAvatar, IonItem, IonLabel,IonList} from '@ionic/react';
 import HttpService from '../api/http';
 import { IUsersItem } from '../interface/interface';
 import './users.css';
@@ -26,29 +26,28 @@ const Users: React.FC = () => {
 
     return (
         <>
-        
             <IonSearchbar></IonSearchbar>
             <IonContent
-        className="ion-padding"
-        scrollEvents={true}
-        onIonScrollStart={_e => {
-          console.log(_e);
-        }}
-        onIonScroll={() => {}}
-        onIonScrollEnd={() => {}}
-      >
-            <IonList>
-                {userList && userList.map((user: IUsersItem) =>
-                    <IonItem key={user.id} onClick={() => alertUser(user)}>
-                        <IonAvatar slot="start">
-                            <img alt="Silhouette of a person's head" src={user.image} />
-                        </IonAvatar>
-                        <IonLabel>
-                            {user.firstName}
-                        </IonLabel>
-                    </IonItem>
-                )}
-            </IonList>
+                className="ion-padding"
+                scrollEvents={true}
+                onIonScrollStart={_e => {
+                    console.log(_e);
+                }}
+                onIonScroll={() => { }}
+                onIonScrollEnd={() => { }}
+            >
+                <IonList>
+                    {userList && userList.map((user: IUsersItem) =>
+                        <IonItem key={user.id} onClick={() => alertUser(user)}>
+                            <IonAvatar slot="start">
+                                <img alt="Silhouette of a person's head" src={user.image} />
+                            </IonAvatar>
+                            <IonLabel>
+                                {user.firstName}
+                            </IonLabel>
+                        </IonItem>
+                    )}
+                </IonList>
             </IonContent>
         </>);
 }
