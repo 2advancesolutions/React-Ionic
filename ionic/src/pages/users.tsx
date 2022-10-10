@@ -1,13 +1,24 @@
 import { useEffect, useState } from 'react';
-import { IonSearchbar, IonContent, IonGrid, IonRow, IonCol  } from '@ionic/react';
-import { IonAvatar, IonItem, IonLabel,IonList} from '@ionic/react';
+import { IonSearchbar, IonContent, IonAvatar, IonItem, IonLabel,IonList,IonLoading, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent} from '@ionic/react';
 import HttpService from '../api/http';
 import { IUsersItem } from '../interface/interface';
 import './users.css';
+import { IoMdGlobe } from "react-icons/io";
+
+interface UserState {
+    loading: boolean,
+    list: IUsersItem,
+    filterList: IUsersItem
+}
 
 const Users: React.FC = () => {
     //  set store
-    const [userList, setUserList] = useState<any>([]);
+    const [state, setState] = useState({
+        loading: false,
+        list: [],
+        filterList: []
+    });
+
     // create http client
     const httpClient = new HttpService();
     // how to handel side effects
@@ -15,18 +26,49 @@ const Users: React.FC = () => {
         // api url https://dummyjson.com/users
         httpClient.get('users')
             .then((data: any) => {
-                setUserList(data.users);
+                setState(state => {
+                    return {
+                        ...state,
+                        loading: false,
+                        list: data.users,
+                        filterList: data.users
+                    };
+                })
             })
     }, []);
 
+    const handleChange = (ev: Event) => {
+        let query = "";
+        const target = ev.target as HTMLIonSearchbarElement;
+        if (target) query = target.value!.toLowerCase();
+        setState(state => {
+            return {
+                ...state,
+                filterList: state.list.filter((user: IUsersItem) => {
+                    return user.firstName.toLowerCase().indexOf(query) > -1
+                })
+            }
+        })
+
+      }
+
     // functions
-    const alertUser = (user: IUsersItem) => {
+    const navUserProfile = (user: IUsersItem) => {
         alert(user.firstName);
     }
 
+   
+
     return (
         <>
-            <IonSearchbar></IonSearchbar>
+            <IonLoading
+                cssClass='my-custom-class'
+                isOpen={state.loading}
+                message={'Please wait...'}
+                duration={5000}
+            />
+
+            <IonSearchbar debounce={1000} onIonChange={(ev) => handleChange(ev)}></IonSearchbar>
             <IonContent
                 className="ion-padding"
                 scrollEvents={true}
@@ -37,15 +79,24 @@ const Users: React.FC = () => {
                 onIonScrollEnd={() => { }}
             >
                 <IonList>
-                    {userList && userList.map((user: IUsersItem) =>
-                        <IonItem key={user.id} onClick={() => alertUser(user)}>
+                    {state.filterList.length > 0 ? state.filterList.map((user: IUsersItem) =>
+                        <IonItem key={user.id} onClick={() => navUserProfile(user)}>
                             <IonAvatar slot="start">
                                 <img alt="Silhouette of a person's head" src={user.image} />
                             </IonAvatar>
                             <IonLabel>
-                                {user.firstName}
+                             {user.firstName}  {user.lastName} <span><IoMdGlobe/></span>
                             </IonLabel>
                         </IonItem>
+                    ) : (
+                        <IonCard>
+                            <IonCardHeader>
+                                <IonCardTitle>No Search Results Found</IonCardTitle>
+                            </IonCardHeader>
+                            <IonCardContent>
+                                Please try typing in another search
+                            </IonCardContent>
+                        </IonCard>
                     )}
                 </IonList>
             </IonContent>
